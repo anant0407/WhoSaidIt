@@ -1,9 +1,16 @@
 import argparse
-
-def gen_connl():
+import minimize
+import os
+import convert_txt_to_conll
+def gen_connl(fpath, output_dir):
+    convert_txt_to_conll.convert(fpath, output_dir)
     pass
 
-def gen_jsonlines():
+def gen_jsonlines(fpath, output_dir):
+    preprocess_params = ['--filename', fpath, '--output_dir', output_dir]
+    preprocess_argparser = minimize.get_argparser()
+    preprocess_args = preprocess_argparser.parse_args(preprocess_params)
+    minimize.minimize_language(preprocess_args)
     pass
 
 def get_args():
@@ -12,8 +19,8 @@ def get_args():
                         help='Name of file')
     parser.add_argument('--tokenizer_name', type=str, default='bert-large-cased',
                         help='Name or path of the tokenizer/vocabulary')
-    parser.add_argument('--output_file', type=str, required=True,
-                        help='Output file')
+    parser.add_argument('--output_dir', type=str, required=True,
+                        help='Output Dir')
     parser.add_argument('--raw_text', type=bool, default=False,
                         help='Should be set as true, if input is raw text.')
     return parser
@@ -21,5 +28,8 @@ def get_args():
 if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
-    gen_connl()
-    gen_jsonlines()
+
+    gen_connl(args.filename, args.output_dir)
+    fname=os.path.splitext(os.path.basename(args.filename))[0]
+    conll_path=os.path.join(args.output_dir, fname+".conll")
+    gen_jsonlines(conll_path, args.output_dir)
