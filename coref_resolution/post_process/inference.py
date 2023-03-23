@@ -16,7 +16,7 @@ def main(fpath, out_path):
     """
     pass
 
-if __name__ == "main":
+if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
     main(args.filename, args.outfile)

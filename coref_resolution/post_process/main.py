@@ -24,12 +24,12 @@ def main(fpath, infered_path, out_path):
     """
         Main function that performs post processing to convert the output of predictions generated from model into input format required for quote attribution.
     """
-    
+
     convert_preds_to_text(fpath, infered_path)
     postprocess(infered_path, out_path)
     pass
 
-if __name__ == "main":
+if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
     infered_path=os.path.join("temp", "infered.json")
