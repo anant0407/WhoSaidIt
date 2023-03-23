@@ -1,0 +1,59 @@
+{
+    "adam_learning_rate": 0.0002,
+    "ckpt_dir": "models/spanbert_large",
+    "debug_embs": false,
+    "dev_path": "data/train.jsonlines",
+    "dropout": 0.4,
+    "encoder_learning_rate": 1e-05,
+    "encoder_name": "shtoshni/spanbert_coreference_large",
+    "encoder_source": "HuggingFace",
+    "evict_fn": false,
+    "finetune": false,
+    "genre": {
+        "genre_emb_size": 20
+    },
+    "genres": [
+        "all",
+        "UNUSED_1",
+        "UNUSED_2",
+        "UNUSED_3",
+        "UNUSED_4",
+        "UNUSED_5",
+        "UNUSED_6"
+    ],
+    "load_model": "auto",
+    "log_dir": "log",
+    "log_path": "models/checkpoints/checkpoint.bin",
+    "max_grad_norm": 10,
+    "max_span_width": 20,
+    "memory_limit": "5",
+    "mentions": false,
+    "method": "alpha",
+    "model_type": "incremental",
+    "negative_sample_rate": 1,
+    "num_epochs": 50,
+    "pairwise": {
+        "antecedent_distance_buckets": 10,
+        "segment_buckets": 3,
+        "speaker_buckets": 2
+    },
+    "patience": 10,
+    "reset_weights": false,
+    "run_name": "example",
+    "seed": 67,
+    "singleton_eval": false,
+    "spans": {
+        "feature_size": 20,
+        "output_size": 3000,
+        "span_width_buckets": 30
+    },
+    "teacher_forcing_rate": 0,
+    "test_path": "data/train.jsonlines",
+    "test_set": false,
+    "threshold": 0,
+    "token_emb_size": 1024,
+    "top_span_ratio": 0.4,
+    "train_path": "data/train.jsonlines",
+    "update_each_segment": false,
+    "use_gold_spans": false
+}
