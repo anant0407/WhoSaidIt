@@ -1,6 +1,6 @@
 {
     "adam_learning_rate": 0.0002,
-    "ckpt_dir": "models/spanbert_large",
+    "ckpt_dir": "models_ckpt/spanbert_large",
     "debug_embs": false,
     "dev_path": "data/train.jsonlines",
     "dropout": 0.4,
@@ -23,7 +23,7 @@
     ],
     "load_model": "auto",
     "log_dir": "log",
-    "log_path": "models/checkpoints/checkpoint.bin",
+    "log_path": "models_ckpt/checkpoints/checkpoint.bin",
     "max_grad_norm": 10,
     "max_span_width": 20,
     "memory_limit": "5",
