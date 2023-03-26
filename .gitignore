@@ -1,3 +1,6 @@
 .DS_Store
 temp
+models_ckpt
 __pycache__
+log
+data
