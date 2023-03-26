@@ -4,8 +4,8 @@
 
 This project is under development, corerference resolution part has been implemented and can be executed by running 
 
-``` python coref_resolution/predict.py
-```
+`` python coref_resolution/predict.py
+``
 
 **input data has to be put in coref_resolution/data/train.jsonlines**
 
