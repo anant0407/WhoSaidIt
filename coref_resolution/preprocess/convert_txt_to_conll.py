@@ -32,7 +32,7 @@ def convert(fpath, out_dir):
         conll_output.append(['#end document'])
     
     if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+        os.makedirs(out_dir)
     with open(out_dir + "/" + str(fname) + ".conll", "w") as f:
         for l in conll_output:
             f.write('\t'.join(l) + '\n')

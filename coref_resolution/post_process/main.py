@@ -1,5 +1,5 @@
 import argparse
-import inference
+from . import inference
 import os
 import json
 import benepar, spacy
@@ -154,7 +154,6 @@ def is_person_name_ner(data, pos, name):
     # print(tokens)
     tags = st.tag(tokens)
     for tag in tags:
-        print("name:",name, "tag", tag[0])
         if (tag[0] in name):
             # print("match")
             if (tag[1]=="PERSON"):
@@ -211,7 +210,7 @@ def postprocess(data):
     
     
 
-def main(fpath, infered_path, out_path):
+def run(fpath, infered_path, out_path):
     """
         Main function that performs post processing to convert the output of predictions generated from model into input format required for quote attribution.
     """
@@ -239,4 +238,4 @@ def main(fpath, infered_path, out_path):
 if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
-    main(args.filename, args.infered_dir, args.output_dir,)
+    run(args.filename, args.infered_dir, args.output_dir,)
