@@ -1,7 +1,7 @@
 import sys
 import os
 import spacy
-import nltk
+from nltk import sent_tokenize
 
 nlp = spacy.load('en')
 def tokenize(text):
@@ -22,7 +22,7 @@ def convert(fpath, out_dir):
 
     for p, tokens in enumerate(get_text(fpath)):
         para = "".join(tokens)
-        sents = nltk.sent_tokenize(para)
+        sents = sent_tokenize(para)
         for sent in sents:
             for x, t in enumerate(sent.split()):
                 i = x + count

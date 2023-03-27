@@ -45,6 +45,7 @@ def main(fpath, out_path):
         output = {
             "document": " ".join(d['tokens']),
             "clusters":clusters,
+            "sentences": d["sentences"],
         }
         fname = os.path.splitext(os.path.basename(fpath))[0]
 

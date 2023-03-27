@@ -6,8 +6,10 @@ import benepar, spacy
 from collections import Counter
 from nltk.corpus import wordnet
 from nltk import Tree
+from nltk.tag import StanfordNERTagger as NERTagger
+from collections import defaultdict
 
-
+from nltk.tokenize import word_tokenize
 
 nlp_spacy = spacy.load('en_core_web_sm')
 if spacy.__version__.startswith('2'):
@@ -84,7 +86,7 @@ def canonical_character_name(names):
              'we', 'us', 'our', 'ours',
              'you', 'your', 'yours', 'yourself',
             'mr.', 'mr', 'ms', 'ms.', 'miss', 'miss.', 'mrs', 'mrs.',
-            'sir',
+            'sir', "it", "its"
             ]
     for name, count in names.items():
         if name.lower() not in stops:
@@ -133,6 +135,38 @@ def is_head_a_person_wordnet(name):
 #     print(syn.hypernym_paths()[0])
     return len([s.name() for s in syn.hypernym_paths()[0] if "person" in s.name()]) > 0
 
+
+def get_sentence_from_mention_pos(sents,pos):
+    tok_cnt=0
+    for sen_id, sen in enumerate(sents):
+        if pos < tok_cnt:
+            return sen_id-1
+        tok_cnt+=len(sen.split())
+    pass
+
+def is_person_name_ner(data, pos, name):
+    sen_id = get_sentence_from_mention_pos(data['sentences'], pos[0])
+    sent = data['sentences'][sen_id]
+    st = NERTagger('stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz', 'stanford-ner/stanford-ner.jar')
+    # print(data['document'].split()[pos[0]: pos[1]],pos[0], sent, name)
+    
+    tokens = word_tokenize(sent)
+    # print(tokens)
+    tags = st.tag(tokens)
+    for tag in tags:
+        print("name:",name, "tag", tag[0])
+        if (tag[0] in name):
+            # print("match")
+            if (tag[1]=="PERSON"):
+                # print(tag[0])
+                return True
+
+    return False
+    
+        
+    # print(tags)
+
+
 def postprocess(data):
     """
         Function that assigns a static names to each infered text cluster mentions.
@@ -161,12 +195,15 @@ def postprocess(data):
     clusters = []
     for clus in out['clusters']:
         mentions = [m['text'] for m in clus['mentions']]
+        mentions_pos = [m['position'] for m in clus['mentions']]
         name = canonical_character_name(Counter(mentions))
         if (name.lower() == name) and (name.lower() not in remove_PRPs):
             if (p.singular_noun(name) is not False and name != p.singular_noun(name)):
                 continue
             elif (not is_head_a_person_wordnet(name)):
                 continue
+        elif (not is_person_name_ner(data, mentions_pos[mentions.index(name)], name)): # there seems to be a problem between indexing of sentence and subtokens
+            continue
         clus['name'] = name
         clusters.append(clus)
     out['clusters'] = clusters
