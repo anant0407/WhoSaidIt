@@ -1,7 +1,7 @@
 import sys
 import os
 import spacy
-import nltk
+from nltk import sent_tokenize
 
 nlp = spacy.load('en')
 def tokenize(text):
@@ -22,7 +22,7 @@ def convert(fpath, out_dir):
 
     for p, tokens in enumerate(get_text(fpath)):
         para = "".join(tokens)
-        sents = nltk.sent_tokenize(para)
+        sents = sent_tokenize(para)
         for sent in sents:
             for x, t in enumerate(sent.split()):
                 i = x + count
@@ -32,7 +32,7 @@ def convert(fpath, out_dir):
         conll_output.append(['#end document'])
     
     if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+        os.makedirs(out_dir)
     with open(out_dir + "/" + str(fname) + ".conll", "w") as f:
         for l in conll_output:
             f.write('\t'.join(l) + '\n')

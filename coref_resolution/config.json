@@ -2,7 +2,7 @@
     "adam_learning_rate": 0.0002,
     "ckpt_dir": "models_ckpt/spanbert_large",
     "debug_embs": false,
-    "dev_path": "data/train.jsonlines",
+    "dev_path": "temp/hp_1_1.jsonlines",
     "dropout": 0.4,
     "encoder_learning_rate": 1e-05,
     "encoder_name": "shtoshni/spanbert_coreference_large",
@@ -48,7 +48,7 @@
         "span_width_buckets": 30
     },
     "teacher_forcing_rate": 0,
-    "test_path": "data/train.jsonlines",
+    "test_path": "temp/hp_1_1.jsonlines",
     "test_set": false,
     "threshold": 0,
     "token_emb_size": 1024,

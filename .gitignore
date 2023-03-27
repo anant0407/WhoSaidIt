@@ -4,3 +4,4 @@ models_ckpt
 __pycache__
 log
 data
+stanford-ner

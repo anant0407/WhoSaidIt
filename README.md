@@ -1,6 +1,16 @@
 # WhoSaidIt
 ## Multi voiced audio generator with quote attribution
 
+
+This project is under development, corerference resolution part has been implemented and can be executed by running 
+
+`` 
+  cd coref_resolution
+  python main.py --filepath ./data/{file_name} --output_dir ./data
+``
+
+**input data has to be put in coref_resolution/data/train.jsonlines**
+
 ----------
 ## References
 

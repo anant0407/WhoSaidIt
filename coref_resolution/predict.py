@@ -10,7 +10,7 @@ import util
 
 from model.incremental import Incremental
 from model.cluster import ClusterList
-
+from nltk import sent_tokenize
 class Predictor():
   def __init__(self, model, data, singleton_eval):
     self.model = model
@@ -76,6 +76,7 @@ class Predictor():
     preds_file = open(path, 'w+')
     for document, preds in zip(self.data, self.predictions):
       document["predicted_clusters"] = preds["clusters"]
+      document["sentences"] = sent_tokenize(" ".join(document['tokens']))
       if self.model.debug_embs:
         document["span_embs"] = preds["span_embs"]
         document["cluster_embs"] = preds["cluster_embs"]

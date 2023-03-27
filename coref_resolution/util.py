@@ -15,7 +15,7 @@ from model.cluster import Span
 
 
 
-def initialize_from_json(eval_test=False, use_overrides=True):
+def initialize_from_json(eval_test=False, use_overrides=False):
 
   overrides = {}
   if len(sys.argv) > 2 and use_overrides:
