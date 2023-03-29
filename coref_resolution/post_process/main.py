@@ -7,7 +7,6 @@ from collections import Counter
 from nltk.corpus import wordnet
 from nltk import Tree
 from nltk.tag import StanfordNERTagger as NERTagger
-from collections import defaultdict
 
 from nltk.tokenize import word_tokenize
 

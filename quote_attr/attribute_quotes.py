@@ -43,6 +43,8 @@ def attribute_quotes(fic_dirpath, coref_dirpath, quote_dirpath, threads):
         list(tqdm(map(attribute_quotes_file, params), total=len(fnames), ncols=70))
 
 def attribute_quotes_file(fname, fic_dirpath, coref_dirpath, quote_dirpath):
+    if not os.path.exists(quote_dirpath):
+        os.makedirs(quote_dirpath)
     inp = AnnotatorInput(fname, fic_dirpath, coref_dirpath)
     if not inp.load_input():
         tqdm.write('skipping file (no coref or fic file)')
