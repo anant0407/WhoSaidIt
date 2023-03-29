@@ -9,7 +9,13 @@ This project is under development, corerference resolution part has been impleme
   python main.py --filepath ./data/{file_name} --output_dir ./data
 ``
 
-**input data has to be put in coref_resolution/data/train.jsonlines**
+quote attribution has also been implemeted, now the pipeline sequence of coreference resolution + quote attribution can be executed with
+
+``
+  python main.py --filepath ./data/{filepath} --output_dir ./out
+``
+
+Voice synthesis is still under construction.
 
 ----------
 ## References
