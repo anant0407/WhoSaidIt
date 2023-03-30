@@ -134,7 +134,7 @@ class AnnotatorOutput():
             "quotes": quotes
         }
 
-        outpath = os.path.join(self.quote_dirpath, f'{fandom_fname}.quote.json')
+        outpath = os.path.join(self.quote_dirpath, f'{fandom_fname}.json')
         with open(outpath, 'w') as f:
             json.dump(out, f)
         #print(f"Saved transformed output to {outpath}")
