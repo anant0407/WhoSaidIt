@@ -1,5 +1,10 @@
 """
 Format quote annotator output for pipeline evaluation
+
+modified by @author Sripranav Muktevi to handle gender data
+original @author Michael Miller Yoder
+@year 2023
+
 """
 import os
 import json
@@ -43,6 +48,17 @@ class AnnotatorOutput():
         self.load_coref_input(fandom_fname)
         charid2name = dict(enumerate([cluster['name'] for cluster in self.coref]))
         return charid2name
+    
+    def get_charmap2(self, fandom_fname):
+        self.load_coref_input(fandom_fname)
+        charid2name = [
+           {
+            "id": _id,
+            "name": cluster['name'],
+            "gender": cluster["gender"]
+            } for _id, cluster in enumerate(self.coref['clusters'])
+        ]
+        return charid2name
 
     def get_global2local(self, fandom_fname):
         """ Convert fic_tokenIDs to (chap, para, token) """
@@ -66,7 +82,7 @@ class AnnotatorOutput():
         """ Build, save output quote json """
         #if self.coref is None:
         self.load_coref_input(fandom_fname)
-        quotes = {}
+        quotes = []
         for quote in data.itertuples():
             entry = {}
             quote_text = ' '.join(self.coref['doc_tokens'][
@@ -74,28 +90,51 @@ class AnnotatorOutput():
             if quote.char_id == 'None':
                 print('skipped quote')
                 continue
-            speaker = charid2name[int(quote.char_id)]
-            if speaker not in quotes:
-                quotes[speaker] = []
+            # speaker = charid2name[int(quote.char_id)]
+
+            entry['text'] = quote_text
+            entry['position'] = (quote.quote_start, quote.quote_end)
+            entry['speaker_id'] = quote.char_id
+
+            quotes.append(entry)
+
+            # if speaker not in quotes:
+            #     quotes[speaker] = []
+            
+            
             #mention_start = global2local[int(quote.mention_start)] \
             #    if quote.mention_start != 'None' else None
             #mention_end = global2local[int(quote.mention_start)] \
             #    if quote.mention_end != 'None' else None
-            quotes[speaker].append(
-                {'position': (quote.quote_start, quote.quote_end),
-                'text': quote_text,
+
+
+            # quotes[speaker].append(
+            #     {'position': (quote.quote_start, quote.quote_end),
+            #     'text': quote_text,
+
+
                 #'start_paragraph_token_id': global2local[
                 #    quote.quote_start]['token_id'],
                 #'end_paragraph_token_id': global2local[
                 #    quote.quote_end-1]['token_id']+1, # otherwise will not be in dict
                 #'start_mention_token_id': mention_start,
                 #'end_mention_token_id': mention_end,
-                })
+            
+            
+                # })
+            
+
             #entry['chapter'] = global2local[quote.quote_start]['chapter_id']
             #entry['paragraph'] = global2local[quote.quote_start]['para_id']
 
         # Save
+
+        out = {
+            "speakers": self.get_charmap2(fandom_fname),
+            "quotes": quotes
+        }
+
         outpath = os.path.join(self.quote_dirpath, f'{fandom_fname}.quote.json')
         with open(outpath, 'w') as f:
-            json.dump(quotes, f)
+            json.dump(out, f)
         #print(f"Saved transformed output to {outpath}")
