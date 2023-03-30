@@ -3,7 +3,7 @@ import os
 import spacy
 from nltk import sent_tokenize
 
-nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_sm')
 def tokenize(text):
     return ' '.join([tok.text for tok in nlp.tokenizer(text)])
 

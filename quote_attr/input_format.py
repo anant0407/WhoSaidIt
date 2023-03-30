@@ -84,7 +84,7 @@ class AnnotatorInput:
         #for fname in sorted(os.listdir(self.coref_dirpath)):
             #print(f'Processing {fname}...')
             #fandom_fname = fname.split('.')[0]
-        nlp = spacy.load('en')
+        nlp = spacy.load('en_core_web_sm')
 
 
 
