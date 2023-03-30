@@ -5,7 +5,7 @@
 This project is under development, corerference resolution part has been implemented and can be executed by running 
 
 `` 
-  cd coref_resolution
+  cd coref_resolution &&
   python main.py --filepath ./data/{file_name} --output_dir ./data
 ``
 
@@ -15,7 +15,12 @@ quote attribution has also been implemeted, now the pipeline sequence of corefer
   python main.py --filepath ./data/{filepath} --output_dir ./out
 ``
 
-Voice synthesis is still under construction.
+Voice synthesis can be executed as 
+
+``
+  cd voice_synthesis &&
+  python main.py --filepath ../out/quote_attr/{quotes filepath}--coref_path ../out/coref/{coref filepath}  --output_dir ./out/voice
+``
 
 ----------
 ## References
