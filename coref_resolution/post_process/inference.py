@@ -50,7 +50,7 @@ def main(fpath, out_path):
         fname = os.path.splitext(os.path.basename(fpath))[0]
 
         if not os.path.exists(out_path):
-            os.mkdir(out_path)
+            os.makedirs(out_path)
 
         with open(os.path.join(out_path, fname + ".json"), "w") as f:
             json.dump(output, f)

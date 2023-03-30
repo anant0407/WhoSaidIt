@@ -1,5 +1,10 @@
 import argparse
-from . import inference
+
+try:
+    from . import inference
+except ImportError:
+    import inference
+
 import os
 import json
 import benepar, spacy
@@ -9,6 +14,8 @@ from nltk import Tree
 from nltk.tag import StanfordNERTagger as NERTagger
 
 from nltk.tokenize import word_tokenize
+
+import gender_guesser.detector as gender_detector
 
 nlp_spacy = spacy.load('en_core_web_sm')
 if spacy.__version__.startswith('2'):
@@ -178,6 +185,9 @@ def postprocess(data):
 
     remove_PRPs = ["you", "me", "he", "she", "my", "mine", "your", "her", "his", "female", "male"]
 
+    male_pronouns = ["he", "him", "his"]
+    female_pronouns = ["she", "her", "hers"]
+
     removable_mens = []
     out = {'document': data['document'],
             'clusters': []}
@@ -194,7 +204,9 @@ def postprocess(data):
     for clus in out['clusters']:
         mentions = [m['text'] for m in clus['mentions']]
         mentions_pos = [m['position'] for m in clus['mentions']]
-        name = canonical_character_name(Counter(mentions))
+        male_count = sum([Counter(mentions)[c] for c in male_pronouns])
+        female_count = sum([Counter(mentions)[c] for c in female_pronouns])
+        name: str = canonical_character_name(Counter(mentions))
         if (name.lower() == name) and (name.lower() not in remove_PRPs):
             if (p.singular_noun(name) is not False and name != p.singular_noun(name)):
                 continue
@@ -203,6 +215,13 @@ def postprocess(data):
         elif (not is_person_name_ner(data, mentions_pos[mentions.index(name)], name)): # there seems to be a problem between indexing of sentence and subtokens
             continue
         clus['name'] = name
+
+        if (male_count+female_count == 0):
+            d = gender_detector.Detector(case_sensitive=False)
+            gender = d.get_gender(name.strip())
+            clus['gender'] = gender if gender != "unknown" else "male"
+        else:
+            clus['gender'] = "male" if male_count>=female_count else "female"
         clusters.append(clus)
     out['clusters'] = clusters
     return out
