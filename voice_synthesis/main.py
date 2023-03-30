@@ -7,8 +7,12 @@ import itertools
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 detokenizer = TreebankWordDetokenizer()
 
-import speaker_data
-from gen_voices import gen_char_voice, gen_narr_voice, get_audio
+try:
+    from . import speaker_data
+    from .gen_voices import gen_char_voice, gen_narr_voice, get_audio
+except ModuleNotFoundError:
+    import speaker_data
+    from gen_voices import gen_char_voice, gen_narr_voice, get_audio
 
 
 from itertools import islice
@@ -82,7 +86,9 @@ class VoiceSynthesizer:
             res+=self.gen_dialog(quote['text'].split(), speakers[quote['speaker_id']])
             prev=quote['position'][1]+1
 
-        get_audio(res, os.path.join(self.output_dir, "out.wav"))
+        fname = os.path.splitext(os.path.basename(self.input_path))[0]
+
+        get_audio(res, os.path.join(self.output_dir, fname+".wav"))
 
 
 def get_args():

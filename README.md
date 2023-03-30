@@ -15,7 +15,7 @@ quote attribution has also been implemeted, now the pipeline sequence of corefer
   python main.py --filepath ./data/{filepath} --output_dir ./out
 ``
 
-Voice synthesis can be executed as 
+Voice synthesis can be executed standalone as 
 
 ``
   cd voice_synthesis &&

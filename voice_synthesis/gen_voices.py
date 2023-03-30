@@ -4,9 +4,9 @@ import os
 
 from TTS.api import TTS
 
-narr_model = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=True, gpu=True)
+narr_model = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=False, gpu=True)
 
-dialog_model = TTS(model_name="tts_models/en/vctk/vits", progress_bar=True, gpu=True)
+dialog_model = TTS(model_name="tts_models/en/vctk/vits", progress_bar=False, gpu=True)
 
 
 def gen_char_voice(text, speaker, output=None):
