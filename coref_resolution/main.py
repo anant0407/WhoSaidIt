@@ -8,7 +8,7 @@ from predict import Predictor
 import torch
 import post_process.main as postprocess
 class Coref:
-    def __init__(self, input_file, output_dir) -> None:
+    def __init__(self, input_file, output_dir, is_conll) -> None:
         self.input_file = input_file
         self.fname=os.path.splitext(os.path.basename(self.input_file))[0]
         self.temp_dir = os.path.join(output_dir, "temp")
@@ -16,8 +16,15 @@ class Coref:
         self.jsonlines_dir = os.path.join(self.temp_dir, "jsonlines")
         self.preds_dir= os.path.join(self.temp_dir, "preds")
         self.output_dir = output_dir
+        self.is_conll = is_conll
 
     def preprocess(self):
+
+        if self.is_conll:
+            gen_jsonlines(self.input_file, self.jsonlines_dir)
+            self.jsonlines_path = os.path.join(self.jsonlines_dir, self.fname+".jsonlines")
+            return
+
         gen_connl(self.input_file, self.conll_dir)
         conll_path=os.path.join(self.conll_dir, self.fname+".conll")
         gen_jsonlines(conll_path, self.jsonlines_dir)
@@ -64,11 +71,13 @@ def get_args():
                         help='Path of input file')
         parser.add_argument('--output_dir', type=str, required=True,
                         help='Output Dir')
+        parser.add_argument('--is_conll', type=lambda x: (str(x).lower() == 'true'), default=False,
+                        help='Should be set as true, if input is a conll format file.')
         return parser
 
 if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
-    coref = Coref(args.filepath, args.output_dir)
+    coref = Coref(args.filepath, args.output_dir, args.is_conll)
     coref.run()
 

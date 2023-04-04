@@ -11,12 +11,16 @@ dialog_model = TTS(model_name="tts_models/en/vctk/vits", progress_bar=False, gpu
 
 def gen_char_voice(text, speaker, output=None):
      if output:
-          dialog_model.tts_to_file(text, speaker, file_path=output)
+          wav = dialog_model.tts(text, speaker)
+          dialog_model.synthesizer.save_wav(wav, output)
+          return wav
      else: 
           return dialog_model.tts(text, speaker)
 def gen_narr_voice(text, output=None):
      if output:
-          narr_model.tts_to_file(text, file_path=output)
+          wav = narr_model.tts(text)
+          narr_model.synthesizer.save_wav(wav, output)
+          return wav
      else:
           return narr_model.tts(text)
      

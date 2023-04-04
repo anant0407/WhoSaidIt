@@ -10,7 +10,7 @@ detokenizer = TreebankWordDetokenizer()
 try:
     from . import speaker_data
     from .gen_voices import gen_char_voice, gen_narr_voice, get_audio
-except ModuleNotFoundError:
+except ImportError:
     import speaker_data
     from gen_voices import gen_char_voice, gen_narr_voice, get_audio
 
@@ -25,10 +25,11 @@ def chunk(arr_range, arr_size):
  
 
 class VoiceSynthesizer:
-    def __init__(self, input_path, coref_path, output_dir) -> None:
+    def __init__(self, input_path, coref_path, output_dir, gen_voices_file) -> None:
           self.input_path = input_path
           self.output_dir = output_dir
           self.coref_path = coref_path
+          self.gen_voice_files = gen_voices_file
           self.temp_dir = os.path.join(output_dir, "temp")
           self.quotes, self.speakers = self.process_input()
           
@@ -38,14 +39,14 @@ class VoiceSynthesizer:
               buff = json.load(f)
         return buff['quotes'], buff['speakers']
 
-    def gen_dialog(self, text, speaker):
+    def gen_dialog(self, text, speaker, output=None):
         text = self.detok(text)
-        return gen_char_voice(text, speaker)
+        return gen_char_voice(text.strip(), speaker, output)
 
 
-    def gen_narration(self, text):
+    def gen_narration(self, text, output=None):
         text = self.detok(text)
-        return gen_narr_voice(text)
+        return gen_narr_voice(text.strip(), output)
 
     def sort_quotes(self):
         self.quotes = sorted(self.quotes, key=lambda x: x['position'])
@@ -63,7 +64,8 @@ class VoiceSynthesizer:
         speakers = set([q['speaker_id'] for q in self.quotes])
         s_va_m = speaker_data.get_male_speakers(shuffle=True)
         s_va_f = speaker_data.get_female_speakers(shuffle=True)
-        speakers = { s: s_va_m[i]['id'] if self.speakers[s]['gender'] else s_va_f[i]['id'] for i,s in enumerate(speakers) }
+        speakers = { s: s_va_m[i]['id'] if self.speakers[s]['gender']=="male" else s_va_f[i]['id'] for i,s in enumerate(speakers) }
+        print(speakers)
         doc = self.load_coref()["document"].split()
         
         if not os.path.exists(self.output_dir):
@@ -74,16 +76,21 @@ class VoiceSynthesizer:
 
         prev=0
         res=[]
+        c=0
         for quote in self.quotes:
             start = quote['position'][0]
             narration: list = doc[prev:start]
             # print(chunk(narration, 100))
             # break
-            # for nar in  chunk(narration, 100):
             if(narration):
-                res+=self.gen_narration(narration)
+                # for nar in  chunk(narration, 100):
+                    res+=self.gen_narration(narration, output=os.path.join(self.temp_dir, str(c)+"_narr.wav") if self.gen_voice_files else None)
+                    print(c)
+                    c+=1
             # for dia in  chunk(quote['text'].split(), 100):
-            res+=self.gen_dialog(quote['text'].split(), speakers[quote['speaker_id']])
+            res+=self.gen_dialog(quote['text'].split(), speakers[quote['speaker_id']], output=os.path.join(self.temp_dir, str(c)+"_quote.wav") if self.gen_voice_files else None)
+            print(c)
+            c+=1
             prev=quote['position'][1]+1
 
         fname = os.path.splitext(os.path.basename(self.input_path))[0]
@@ -99,11 +106,13 @@ def get_args():
                     help='Path of coreference output')
      parser.add_argument('--output_dir', type=str, required=True,
                     help='Output Dir')
+     parser.add_argument('--gen_voice_files', type=lambda x: (str(x).lower() == 'true'), required=False,
+                    default = False, help='Set True if you want to generate voice for each quote seperately.')
      return parser
 
 
 if __name__ == "__main__":
      parser = get_args()
      args = parser.parse_args()
-     voicer = VoiceSynthesizer(args.filepath, args.coref_path, args.output_dir)
+     voicer = VoiceSynthesizer(args.filepath, args.coref_path, args.output_dir, args.gen_voice_files)
      voicer.run()

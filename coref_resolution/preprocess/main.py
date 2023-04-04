@@ -23,15 +23,18 @@ def get_args():
                         help='Output Dir')
     parser.add_argument("--conll_dir", type=str, required=True,
                         help='Directory for saving conll file')
-    parser.add_argument('--raw_text', type=bool, default=False,
-                        help='Should be set as true, if input is raw text.')
+    parser.add_argument('--is_conll', type=lambda x: (str(x).lower() == 'true'), default=False,
+                        help='Should be set as true, if input is a conll format file.')
     return parser
 
 if __name__ == "__main__":
     parser = get_args()
     args = parser.parse_args()
 
-    gen_connl(args.filename, args.output_dir)
-    fname=os.path.splitext(os.path.basename(args.filename))[0]
-    conll_path=os.path.join(args.conll_dir, fname+".conll")
-    gen_jsonlines(conll_path, args.output_dir)
+    if args.is_conll:
+        gen_jsonlines(args.filename, args.output_dir)
+    else:
+        gen_connl(args.filename, args.output_dir)
+        fname=os.path.splitext(os.path.basename(args.filename))[0]
+        conll_path=os.path.join(args.conll_dir, fname+".conll")
+        gen_jsonlines(conll_path, args.output_dir)
