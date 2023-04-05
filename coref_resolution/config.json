@@ -26,7 +26,7 @@
     "log_path": "models_ckpt/checkpoints/checkpoint.bin",
     "max_grad_norm": 10,
     "max_span_width": 20,
-    "memory_limit": "5",
+    "memory_limit": "4",
     "mentions": false,
     "method": "alpha",
     "model_type": "incremental",
