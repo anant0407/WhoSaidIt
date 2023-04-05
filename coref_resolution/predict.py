@@ -37,7 +37,7 @@ class Predictor():
       predicted_clusters = cluster_list.get_clusters(self.singleton_eval, condensed=True, print_clusters=False)
       self.predictions.append(predicted_clusters)
       if perf and torch.cuda.is_available():
-        max_memory_alloc = torch.cuda.max_memory_allocated() / (1024 ** 3)
+        max_memory_alloc = torch.cuda.max_memory_allocated()
         self.max_memory_alloc = max_memory_alloc
         torch.cuda.reset_peak_memory_stats()
         torch.cuda.empty_cache()
