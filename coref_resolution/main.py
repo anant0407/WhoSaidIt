@@ -7,6 +7,7 @@ from model.incremental import Incremental
 from predict import Predictor
 import torch
 import post_process.main as postprocess
+import time
 class Coref:
     def __init__(self, input_file, output_dir, is_conll) -> None:
         self.input_file = input_file
@@ -17,6 +18,7 @@ class Coref:
         self.preds_dir= os.path.join(self.temp_dir, "preds")
         self.output_dir = output_dir
         self.is_conll = is_conll
+        self.time = 0
 
     def preprocess(self):
 
@@ -49,8 +51,11 @@ class Coref:
             os.makedirs(self.preds_dir)
 
         with torch.no_grad():
+            
+            self.time = time.time()
             predictor.predict(write_file=os.path.join(self.preds_dir, self.fname + ".json"), perf=True)
             self.preds_path = os.path.join(self.preds_dir, self.fname + ".json")
+            self.max_memory_alloc = predictor.max_memory_alloc
     
     def postprocess(self):
         self.infered_dir = os.path.join(self.temp_dir, "infered")

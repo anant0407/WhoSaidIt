@@ -38,6 +38,7 @@ class Predictor():
       self.predictions.append(predicted_clusters)
       if perf and torch.cuda.is_available():
         max_memory_alloc = torch.cuda.max_memory_allocated() / (1024 ** 3)
+        self.max_memory_alloc = max_memory_alloc
         torch.cuda.reset_peak_memory_stats()
         torch.cuda.empty_cache()
         self.perf_data.append((document["subtoken_map"][-1], max_memory_alloc))

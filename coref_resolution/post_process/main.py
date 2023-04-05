@@ -23,7 +23,6 @@ if spacy.__version__.startswith('2'):
 else:
     nlp_spacy.add_pipe("benepar", config={"model": "benepar_en3"})
 
-
 import inflect
 p = inflect.engine()
 
@@ -165,7 +164,6 @@ def is_person_name_ner(data, pos, name):
             if (tag[1]=="PERSON"):
                 # print(tag[0])
                 return True
-
     return False
     
         
@@ -176,7 +174,7 @@ def postprocess(data):
     """
         Function that assigns a static names to each infered text cluster mentions.
     """
-    men_to_pred = {tuple(m['position']): c for c, clus in enumerate(data['clusters']) for m in clus['mentions']}
+    # men_to_pred = {tuple(m['position']): c for c, clus in enumerate(data['clusters']) for m in clus['mentions']}
     #mentions = sorted([tuple(m) for c, clus in enumerate(data['gold_clusters']) for m in clus])
 
     PRPs = ["it", "this", "that", "they", "them", "we", "these", "those", "our", "ours", "their", "theirs", "there", "its", "here"]
@@ -188,7 +186,7 @@ def postprocess(data):
     male_pronouns = ["he", "him", "his"]
     female_pronouns = ["she", "her", "hers"]
 
-    removable_mens = []
+    # removable_mens = []
     out = {'document': data['document'],
             'clusters': []}
 

@@ -1,6 +1,8 @@
 import argparse
 import os
 import sys
+import time
+import resource
 
 coref_path = os.path.join(os.path.dirname(__file__), 'coref_resolution')
 quote_path = os.path.join(os.path.dirname(__file__), 'quote_attr')
@@ -21,12 +23,15 @@ class Pipeline:
           self.coref_dir = os.path.join(self.output_dir, "coref")
           self.voice_dir = os.path.join(self.output_dir, "voice")
           self.args = args
+          self.time=0
 
      def coref_resolution(self):
           cwd = os.getcwd()
           os.chdir(coref_path)
           coref = Coref(self.filepath, self.coref_dir, self.args.is_conll)
           coref.run()
+          self.time=coref.time
+          self.max_memory_alloc = coref.max_memory_alloc
           os.chdir(cwd)
 
 
@@ -47,7 +52,6 @@ class Pipeline:
      
      def metrics(self):
           metrics.run(os.path.join(self.quote_dir, self.fname+".json"), self.args.metrics, self.args.character_data)
-          print()
 
      def run(self):
           print("Starting pipleine..")
@@ -59,6 +63,10 @@ class Pipeline:
                     self.voice_syn()
           if self.args.metrics:
                self.metrics()
+          print("Time: ", time.time()-self.time)
+          print("Peak CPU memory used: ", resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+          print("Peak GPU memory used: ", self.max_memory_alloc / (1024 ** 3))
+
           print("Complete")
     
 
